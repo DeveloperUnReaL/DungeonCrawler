@@ -1,12 +1,11 @@
 import logging
 
 def render_y(screen_y, screen_x, height, width, naytto):
-    y_pos = screen_y + 1
+    y_pos = screen_y + 2
     with open("Test.txt", "r") as a:
-        for i in range(0, height):
+        for i in range(screen_y, height):
             row = str((a.readlines(y_pos)))
             row = row.replace("[","").replace("]","").replace("'","").replace("n","")
-            w = width
             y_pos = y_pos + 1
             #append every row to list named naytto
             naytto.append(row[screen_x:screen_x+width])
@@ -30,7 +29,7 @@ def renderAll(worldState):
     worldState.renderableprops.append(filterProps(worldState.propcoords, worldState.screen_x, worldState.screen_y, worldState.width, worldState.height)) ###filter which props from propcoords get rendered, add them to list renderableprops
     render_y(worldState.screen_y, worldState.screen_x, worldState.height, worldState. width, worldState.naytto) ###adds the part of the map which will be rendered to a list called naytto so replace() can put the props in
 
-    ###go through every filtered prop (=every prop that is rendered) and replace every character with the monsters character, then print the ouput to console.
+    ###go through every filtered prop (=every prop that is rendered) and replace every character with the props character. If no props are going to be rendered, continue to the next step
     if len(worldState.renderableprops) != 0:
         for i in worldState.renderableprops:
             rivinumero = i.y
@@ -41,7 +40,10 @@ def renderAll(worldState):
     else:
         pass
     
-    for i in range(0, worldState.height):
+#    replace()
+
+    ###print every item in naytto
+    for i in range(len(worldState.naytto)):
         print(worldState.naytto[i])
 
 
@@ -51,8 +53,8 @@ def renderAll(worldState):
 
 class WorldState:
     '''Holds everything together'''
-    screen_x = 1
-    screen_y = 1
+    screen_x = 0
+    screen_y = 2
     width = 9 
     height = 7
 
@@ -72,10 +74,15 @@ class WorldState:
         #the fuck is this shit, just replace this function when you like with something that reads props and their coordinates from a .txt or a .json
         props = []
         #load props
-        enemy1 = enemy("@", 4, 10, 2, 4, 1, "none", 2, 4)
+        enemy1 = enemy("E", 4, 10, 2, 4, 1, "none", 2, 4)
         props.append(enemy1)
         for i in props:
             self.propcoords.append(i)
+    
+    
+    def loadPlayer(self):
+        player = hero("@", 3, 20, 4, 3, 1, "none")
+        self.renderableprops.append(player)
 
 
     def init(self):
